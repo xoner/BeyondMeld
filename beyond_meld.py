@@ -1,3 +1,16 @@
+#    This program is free software: you can redistribute it and/or modify
+#    it under the terms of the GNU General Public License as published by
+#    the Free Software Foundation, either version 3 of the License, or
+#    (at your option) any later version.
+
+#    This program is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    GNU General Public License for more details.
+
+#    You should have received a copy of the GNU General Public License
+#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+'''Provides nautilus menu entries to launch meld from nautilus'''
 import os
 import nautilus
 import urllib
@@ -16,16 +29,22 @@ class BeyondMeld(nautilus.MenuProvider):
         self.data_path = path.join(os.environ["HOME"], '.nautilus/BeyondMeld/LeftSide')
         self.comparer_command = '/usr/bin/meld {0} {1}'
         self.left_side = LeftSideItem()
+        
+    def _get_path_from_url(self, url):
+        '''
+        Converts the given url to a path
+        '''
+        return urllib.unquote(url[7:])
 
-    def compare_each_other_cb(self, menu, path1, path2):
+    def compare_each_other_cb(self, menu, url1, url2):
         '''
-        Callback function for the compare with each other menu entry.
+        Callback function for the "compare with each other menu entry".
         Converts the selected urls to paths and passes them to meld.
-        @path1 the url of the fisrst selected element for comparision.
-        @path2 the url of the second selected element for comparision.
+        path1 -- the url of the first selected element for comparision.
+        path2 -- the url of the second selected element for comparision.
         '''
-        l_path1 = urllib.unquote(path1[7:])
-        l_path2 = urllib.unquote(path2[7:])
+        l_path1 = self._get_path_from_url(url1)
+        l_path2 = self._get_path_from_url(url2)
         os.system(self.comparer_command.format(l_path1, l_path2))
         
     def select_left_side_cb(self, menu, url):
@@ -35,8 +54,10 @@ class BeyondMeld(nautilus.MenuProvider):
         '''
         Shows the corresponding menu items to launch the comparision.
         '''
+        # More than two files/folders selected not supported. 
         if len(files) > 2:
             return
+        
         # Two folders or files comparision.
         if len(files) == 2:
             if (files[0].is_directory() and files[1].is_directory()) or (not files[0].is_directory() and not files[1].is_directory()):
