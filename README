@@ -1,1 +1,8 @@
-#TODO: Document this.
+This nautilus extension adds contextual menus shortcut to the default 
+gnome file navigator, to select and compare file/folders in meld.
+
+The run this extension you must have installed (in ubuntu) the packages:
+· meld (obviuosly)
+· python-nautilus
+
+To install this extension justdrop the file beyond_meld.py in ~/.nautilus/python-extensions 

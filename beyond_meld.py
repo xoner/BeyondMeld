@@ -44,6 +44,11 @@ class BeyondMeld(nautilus.MenuProvider):
         self.data_path = path.join(os.environ["HOME"], '.nautilus/BeyondMeld/LeftSide')
         self.comparer_command = '/usr/bin/meld {0} {1}&'
         self.left_side = LeftSideItem(self.data_path)
+        
+        # bakcend initialization.
+        directory_location = path.split(self.data_path)[0]
+        if not path.exists(directory_location):
+            os.mkdir(directory_location)
 
     def compare_each_other_cb(self, menu, path1, path2):
         '''
